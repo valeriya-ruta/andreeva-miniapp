@@ -7,12 +7,16 @@ interface PaymentModalProps {
   isOpen: boolean
   onClose: () => void
   price: string
+  videoId: number
+  onPaymentComplete: (videoId: number) => void
 }
 
 export default function PaymentModal({
   isOpen,
   onClose,
   price,
+  videoId,
+  onPaymentComplete,
 }: PaymentModalProps) {
   useEffect(() => {
     if (isOpen) {
@@ -25,6 +29,12 @@ export default function PaymentModal({
       document.body.style.overflow = 'unset'
     }
   }, [isOpen])
+
+  const handlePaymentClick = () => {
+    // Simulate payment completion
+    onPaymentComplete(videoId)
+    onClose()
+  }
 
   if (!isOpen) return null
 
@@ -39,7 +49,7 @@ export default function PaymentModal({
         </div>
         <div className={styles.modalContent}>
           <p className={styles.priceText}>Ціна: {price}</p>
-          <button className={styles.paymentButton}>
+          <button className={styles.paymentButton} onClick={handlePaymentClick}>
             Ця кнопка веде на оплату
           </button>
         </div>

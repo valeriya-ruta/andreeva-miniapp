@@ -11,7 +11,7 @@ interface VideoCardProps {
     type: 'watch' | 'price'
     price?: string
   }
-  onPriceClick: (price: string) => void
+  onPriceClick: (videoId: number, price: string) => void
 }
 
 export default function VideoCard({ video, onPriceClick }: VideoCardProps) {
@@ -19,7 +19,7 @@ export default function VideoCard({ video, onPriceClick }: VideoCardProps) {
 
   const handleClick = () => {
     if (video.type === 'price' && video.price) {
-      onPriceClick(video.price)
+      onPriceClick(video.id, video.price)
     } else {
       router.push(`/videos/${video.id}`)
     }

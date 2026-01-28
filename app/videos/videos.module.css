@@ -24,3 +24,26 @@
   flex-direction: column;
   gap: 16px;
 }
+
+.resetContainer {
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.resetButton {
+  padding: 10px 20px;
+  background-color: #f5f5f5;
+  color: #666;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.resetButton:active {
+  background-color: #e0e0e0;
+  transform: scale(0.98);
+}

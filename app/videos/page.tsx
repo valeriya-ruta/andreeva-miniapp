@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import BottomNav from '@/components/BottomNav'
 import VideoCard from '@/components/VideoCard'
 import PaymentModal from '@/components/PaymentModal'
+import { usePurchasedVideos } from '@/hooks/usePurchasedVideos'
 import styles from './videos.module.css'
 
 const videos = [
@@ -43,11 +44,34 @@ const videos = [
 
 export default function VideosPage() {
   const [showModal, setShowModal] = useState(false)
-  const [selectedPrice, setSelectedPrice] = useState<string>('')
+  const [selectedVideo, setSelectedVideo] = useState<{
+    id: number
+    price: string
+  } | null>(null)
+  const { purchaseVideo, isPurchased, purchasedVideos, resetPurchases } = usePurchasedVideos()
 
-  const handlePriceClick = (price: string) => {
-    setSelectedPrice(price)
+  // Transform videos based on purchased status
+  const displayVideos = useMemo(() => {
+    return videos.map((video) => {
+      // If video was originally priced but is now purchased, change to watch type
+      if (video.type === 'price' && purchasedVideos.has(video.id)) {
+        return {
+          ...video,
+          type: 'watch' as const,
+        }
+      }
+      return video
+    })
+  }, [purchasedVideos])
+
+  const handlePriceClick = (videoId: number, price: string) => {
+    setSelectedVideo({ id: videoId, price })
     setShowModal(true)
+  }
+
+  const handlePaymentComplete = (videoId: number) => {
+    purchaseVideo(videoId)
+    setSelectedVideo(null)
   }
 
   return (
@@ -56,18 +80,28 @@ export default function VideosPage() {
         <h1>Відео</h1>
       </div>
       <div className={styles.videosList}>
-        {videos.map((video) => (
+        {displayVideos.map((video) => (
           <VideoCard
             key={video.id}
             video={video}
-            onPriceClick={handlePriceClick}
+            onPriceClick={(price) => handlePriceClick(video.id, price)}
           />
         ))}
       </div>
+      <div className={styles.resetContainer}>
+        <button className={styles.resetButton} onClick={resetPurchases}>
+          скинути оплати
+        </button>
+      </div>
       <PaymentModal
         isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        price={selectedPrice}
+        onClose={() => {
+          setShowModal(false)
+          setSelectedVideo(null)
+        }}
+        price={selectedVideo?.price || ''}
+        videoId={selectedVideo?.id || 0}
+        onPaymentComplete={handlePaymentComplete}
       />
       <BottomNav />
     </main>
