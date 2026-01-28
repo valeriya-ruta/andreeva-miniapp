@@ -34,10 +34,10 @@ export function useTelegram() {
       tg.expand()
 
       const user = tg.initDataUnsafe?.user
-      if (user?.username) {
-        setUsername(`@${user.username}`)
-      } else if (user?.first_name) {
+      if (user?.first_name) {
         setUsername(user.first_name)
+      } else if (user?.username) {
+        setUsername(user.username)
       }
     }
   }
