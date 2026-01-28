@@ -84,7 +84,7 @@ export default function VideosPage() {
           <VideoCard
             key={video.id}
             video={video}
-            onPriceClick={(price) => handlePriceClick(video.id, price)}
+            onPriceClick={handlePriceClick}
           />
         ))}
       </div>
